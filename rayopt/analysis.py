@@ -157,8 +157,8 @@ class Analysis:
                        labeltop=False, labelright=False,
                        labelleft=True, labelbottom=True,
                        direction="out", axis="both")
-        ax.xaxis.set_smart_bounds(True)
-        ax.yaxis.set_smart_bounds(True)
+        #ax.xaxis.set_smart_bounds(True)
+        #ax.yaxis.set_smart_bounds(True)
         ax.locator_params(tight=True, nbins=5)
         kw = dict(rotation="horizontal")
         if xlabel:
@@ -311,7 +311,7 @@ class Analysis:
                 mm = np.fabs(og).max()
                 v = np.linspace(-mm, mm, 21)
             axo.contour(x, y, o, v, cmap=plt.cm.RdBu_r)
-            axo.text(.5, -.1, "PTP: %.3g" % og.ptp(),
+            axo.text(.5, -.1, "PTP: %.3g" % np.ptp(og),
                      transform=axo.transAxes, horizontalalignment="center")
             r = paraxial.airy_radius[1]/paraxial.wavelength*wavelength
             axp.add_patch(mpl.patches.Circle(

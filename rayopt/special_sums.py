@@ -146,7 +146,7 @@ def angle_sum(m, angle, aspect=1., binsize=None):
     #assert k.min() == km
     #assert k.max() == kp
     # output bin index
-    k = np.floor(k - (km - .5)).astype(np.int)
+    k = np.floor(k - (km - .5)).astype(np.int64)
     return np.bincount(k.ravel(), m.ravel()) #, minlength=kp-km
 
 
@@ -206,7 +206,7 @@ def polar_sum(m, center, direction, aspect=1., binsize=None):
     The full array sum is always strictly conserved:
         polar_sum(m, ...).sum() == m.sum()
 
-    The function uses (coordinate).astype(np.int) to bin (c.f. around,
+    The function uses (coordinate).astype(np.int64) to bin (c.f. around,
     trunc, rint).
 
     Examples
@@ -254,7 +254,7 @@ def polar_sum(m, center, direction, aspect=1., binsize=None):
         minlength = int(2*np.pi/binsize) + 1
     else:
         raise ValueError("direction needs to be 'radial' or 'azimuthal'")
-    k = (k/binsize).astype(np.int)
+    k = (k/binsize).astype(np.int64)
     r = np.bincount(k.ravel(), m.ravel(), minlength)
     if direction == "radial":
         assert r.shape[0] == minlength, (r.shape, minlength)

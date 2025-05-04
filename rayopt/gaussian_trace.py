@@ -36,7 +36,7 @@ class GaussianTrace(Trace):
 
     def allocate(self):
         super().allocate()
-        self.qi = np.empty((self.length, 2, 2), dtype=np.complex_)
+        self.qi = np.empty((self.length, 2, 2), dtype=np.complex128)
         self.n = np.empty(self.length)
 
     def make_qi(self, l, n, waist, position=(0, 0.), angle=0.):

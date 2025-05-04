@@ -90,7 +90,7 @@ def main():
         f = opts.location
     else:
         import requests
-        from six import BytesIO
+        from io import BytesIO
         f = BytesIO(requests.get(opts.location).content)
     try:
         dir = tempfile.mkdtemp()

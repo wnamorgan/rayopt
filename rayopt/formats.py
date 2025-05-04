@@ -83,7 +83,7 @@ def system_from_text(text, *args, **kwargs):
 
 
 def system_from_yaml(text):
-    dat = yaml.load(text)
+    dat = yaml.load(text, Loader=yaml.SafeLoader)
     assert dat.pop("type", "system") == "system"
     return System(**dat)
 

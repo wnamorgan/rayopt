@@ -5,3 +5,5 @@
 /rayopt/simplex_accel.c
 /.coverage.*
 /.coverage
+.ipynb_checkpoints
+__pycache__

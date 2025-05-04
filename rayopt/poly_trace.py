@@ -185,7 +185,7 @@ class PolyTrace(Trace):
 
     def print_params(self):
         yield f"maximum order: {self.Simplex.n:d}"
-        yield "wavelength: {:g}".format(self.l/1e-9)
+        yield f"wavelength: {self.l/1e-9:g}"
 
     def print_trace(self, components="stvwof", elements=None, cutoff=None,
                     width=12):
