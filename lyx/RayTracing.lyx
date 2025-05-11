@@ -3071,14 +3071,16 @@ z_{conic} =
 \backslash
 frac{cr^2}{1+
 \backslash
-sqrt{1-(1+k)c^2r^2}}
+sqrt{1-(1+k)c^2r^2}} 
+\backslash
+label{conic: zconic}
 \end_layout
 
 \begin_layout Plain Layout
 
 
 \backslash
-end{equaiton}
+end{equation}
 \end_layout
 
 \end_inset
@@ -3181,37 +3183,7 @@ end{equation}
 
 \end_inset
 
-The partial derivative of 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-(F
-\backslash
-)
-\end_layout
-
-\end_inset
-
- with respect to 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-(z
-\backslash
-)
-\end_layout
-
-\end_inset
-
- is given by 
+The gradient is given by the following.
 \begin_inset ERT
 status open
 
@@ -3226,11 +3198,136 @@ begin{equation}
 
 
 \backslash
+bm{
+\backslash
+nabla} F = 
+\backslash
+begin{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
 frac{
 \backslash
 partial F}{
 \backslash
-partial z} = 1
+partial z_{conic}}
+\backslash
+frac{
+\backslash
+partial z_{conic}}{
+\backslash
+partial r^2} 
+\backslash
+frac{
+\backslash
+partial r^2}{
+\backslash
+partial x} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial z_{conic}}
+\backslash
+frac{
+\backslash
+partial z_{conic}}{
+\backslash
+partial r^2} 
+\backslash
+frac{
+\backslash
+partial r^2}{
+\backslash
+partial y} 
+\backslash
+
+\backslash
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial z} 
+\backslash
+end{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+= 
+\backslash
+begin{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+-
+\backslash
+frac{
+\backslash
+partial z_{conic}}{
+\backslash
+partial r^2} 
+\backslash
+frac{
+\backslash
+partial r^2}{
+\backslash
+partial x} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-
+\backslash
+frac{
+\backslash
+partial z_{conic}}{
+\backslash
+partial r^2} 
+\backslash
+frac{
+\backslash
+partial r^2}{
+\backslash
+partial y} 
+\backslash
+
+\backslash
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+1 
+\backslash
+end{bmatrix} 
+\backslash
+label{conic F: grad}
 \end_layout
 
 \begin_layout Plain Layout
@@ -3242,22 +3339,7 @@ end{equation}
 
 \end_inset
 
-The constraint 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-(F
-\backslash
-)
-\end_layout
-
-\end_inset
-
- can be expressed as
+The conic function can be expressed as
 \begin_inset ERT
 status open
 
@@ -3270,7 +3352,7 @@ begin{equation}
 
 \begin_layout Plain Layout
 
-F=z - 
+z_{conic}=
 \backslash
 frac{cr^2}{1+g} 
 \backslash
@@ -3336,7 +3418,7 @@ status open
 
 
 \backslash
-(F
+(z_{conic}
 \backslash
 )
 \end_layout
@@ -3375,19 +3457,24 @@ begin{equation}
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
 partial r^2} = 
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
 partial r^2} + 
+\end_layout
+
+\begin_layout Plain Layout
+
+
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
 partial g}
 \backslash
@@ -3402,7 +3489,7 @@ partial r^2}
 
 
 \backslash
-label{conic: dFdr2}
+label{conic: dzconic dr2}
 \end_layout
 
 \begin_layout Plain Layout
@@ -3438,9 +3525,9 @@ begin{align}
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
-partial r^2} &= -
+partial r^2} &= 
 \backslash
 frac{c}{1+g} 
 \backslash
@@ -3455,9 +3542,9 @@ frac{c}{1+g}
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
-partial g} &= 
+partial g} &= -
 \backslash
 frac{cr^2}{(1+g)^2} 
 \backslash
@@ -3518,7 +3605,7 @@ status open
 
 
 \backslash
-ref{conic: dFdr2}
+ref{conic: dzconic dr2}
 \end_layout
 
 \end_inset
@@ -3540,11 +3627,11 @@ begin{equation}
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
-partial r^2} = -
+partial r^2} = 
 \backslash
-frac{c}{1+g} - 
+frac{c}{1+g} + 
 \backslash
 frac{cr^2}{(1+g)^2}
 \backslash
@@ -3553,7 +3640,7 @@ frac{(1+k)c^2}{2g}
 
 \begin_layout Plain Layout
 
-= - 
+= 
 \backslash
 frac{2cg(1+g) + (1+k)c^3r^2}{2g(1+g)^2}
 \end_layout
@@ -3562,7 +3649,7 @@ frac{2cg(1+g) + (1+k)c^3r^2}{2g(1+g)^2}
 
 
 \backslash
-label{conic: dFdr2 2}
+label{conic: dzconic dr2 2}
 \end_layout
 
 \begin_layout Plain Layout
@@ -3582,7 +3669,7 @@ status open
 
 
 \backslash
-(F
+(r^2
 \backslash
 )
 \end_layout
@@ -3643,27 +3730,9 @@ begin{align}
 \backslash
 frac{
 \backslash
-partial F}{
-\backslash
-partial x} &= 
-\backslash
-frac{
-\backslash
-partial F}{
-\backslash
-partial r^2}
-\backslash
-frac{
-\backslash
 partial r^2}{
 \backslash
-partial x} = 2x
-\backslash
-frac{
-\backslash
-partial F}{
-\backslash
-partial r^2} 
+partial x} &= 2x 
 \backslash
 
 \backslash
@@ -3676,34 +3745,18 @@ partial r^2}
 \backslash
 frac{
 \backslash
-partial F}{
-\backslash
-partial y} &= 
-\backslash
-frac{
-\backslash
-partial F}{
-\backslash
-partial r^2}
-\backslash
-frac{
-\backslash
 partial r^2}{
 \backslash
-partial y} = 2y
-\backslash
-frac{
-\backslash
-partial F}{
-\backslash
-partial r^2}
+partial y} &= 2y
 \end_layout
 
 \begin_layout Plain Layout
 
 
 \backslash
-end{align}
+end{align} 
+\backslash
+label{conic: part rsq x and y}
 \end_layout
 
 \begin_layout Plain Layout
@@ -3715,7 +3768,33 @@ end{subequations}
 
 \end_inset
 
-The graient is given by
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{conic: part rsq x and y}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{conic F: grad}
+\end_layout
+
+\end_inset
+
+) gives
 \begin_inset ERT
 status open
 
@@ -3734,66 +3813,48 @@ bm{
 \backslash
 nabla} F = 
 \backslash
-begin{bmatrix} 
-\backslash
-frac{
-\backslash
-partial F}{
-\backslash
-partial x} 
-\backslash
-
-\backslash
- 
-\backslash
-frac{
-\backslash
-partial F}{
-\backslash
-partial y} 
-\backslash
-
-\backslash
- 
-\backslash
-frac{
-\backslash
-partial F}{
-\backslash
-partial z} 
-\backslash
-end{bmatrix}
+begin{bmatrix}
 \end_layout
 
 \begin_layout Plain Layout
 
-              = 
-\backslash
-begin{bmatrix} 2x
+-2x
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
-partial r^2} 
+partial r^2}  
 \backslash
 
 \backslash
- 2y
+
+\end_layout
+
+\begin_layout Plain Layout
+
+-2y
 \backslash
 frac{
 \backslash
-partial F}{
+partial z_{conic}}{
 \backslash
-partial r^2} 
+partial r^2}  
 \backslash
 
 \backslash
- 1 
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+1 
 \backslash
 end{bmatrix} 
 \backslash
-hspace{4 pt} ,
+hspace{4 pt} , 
+\backslash
+label{conic F: grad 2}
 \end_layout
 
 \begin_layout Plain Layout
@@ -3813,7 +3874,7 @@ status open
 
 
 \backslash
-(F
+(z_{conic}
 \backslash
 )
 \end_layout
@@ -3843,7 +3904,7 @@ status open
 
 
 \backslash
-ref{conic: dFdr2 2}
+ref{conic: dzconic dr2 2}
 \end_layout
 
 \end_inset
@@ -3877,7 +3938,9 @@ sum A_k r^{2k}
 \backslash
 right) = 0 
 \backslash
-hspace{4 pt} ,
+hspace{4 pt} , 
+\backslash
+label{conic: asphere const}
 \end_layout
 
 \begin_layout Plain Layout
@@ -3904,7 +3967,7 @@ status open
 
 \end_inset
 
- is given by the following.
+ is given by (
 \begin_inset ERT
 status open
 
@@ -3912,28 +3975,26 @@ status open
 
 
 \backslash
-begin{equation}
-\end_layout
-
-\begin_layout Plain Layout
-
-z_{conic} = 
-\backslash
-frac{cr^2}{1+
-\backslash
-sqrt{1-(1+k)c^2r^2}}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-end{equation}
+ref{conic: zconic}
 \end_layout
 
 \end_inset
 
-The graient is given by the following.
+).
+ The gradient of (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{conic: asphere const}
+\end_layout
+
+\end_inset
+
+) is given by
 \begin_inset ERT
 status open
 
@@ -3950,19 +4011,42 @@ begin{equation}
 \backslash
 bm{
 \backslash
-nabla} F = 2
+nabla} F = 
 \backslash
-begin{bmatrix} x-x_0 
+bm{
+\backslash
+nabla} F_{conic} - 
+\backslash
+sum 2k A_k r^{2k-1} 
+\backslash
+begin{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+2x 
 \backslash
 
 \backslash
- y-y_0 
+
+\end_layout
+
+\begin_layout Plain Layout
+
+2y 
 \backslash
 
 \backslash
- z-z_0 
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+0 
 \backslash
-end{bmatrix}
+end{bmatrix} 
+\backslash
+hspace{4 pt} ,
 \end_layout
 
 \begin_layout Plain Layout
@@ -3974,7 +4058,39 @@ end{equation}
 
 \end_inset
 
+where 
+\begin_inset ERT
+status open
 
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{
+\backslash
+nabla} F_{conic}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is given by (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{conic F: grad 2}
+\end_layout
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Subsection
