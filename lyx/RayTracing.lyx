@@ -1,0 +1,4038 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{placeins}
+\usepackage{afterpage}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[a4paper,
+            bindingoffset=0.2in,
+            left=1in,
+            right=1in,
+            top=1in,
+            bottom=1in,
+            footskip=.25in]{geometry} 
+\DeclareMathOperator{\hr}{hr}
+\DeclareMathOperator{\m}{m}
+\DeclareMathOperator{\g}{g}
+\DeclareMathOperator{\Hz}{Hz}
+\DeclareMathOperator{\arcsec}{arcsec}
+\usepackage{physics}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Optical Ray Tracing
+\end_layout
+
+\begin_layout Author
+Wes Morgan
+\end_layout
+
+\begin_layout Abstract
+The purpose of this monograph is to provide background on optical ray tracing.
+\end_layout
+
+\begin_layout Section
+Reflection and Refraction
+\end_layout
+
+\begin_layout Standard
+At any interface, energy is split between reflection, refraction, and absorption.
+ Reflection is when a ray hits an interface and returns back at an angle
+ exactly opposite to the angle of incidence.
+ Refraction is when light passes through the interface and is bent according
+ to Snell's law.
+ The incident radition vector has at the interface is denoted by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{i}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and the surface normal at the intersection is denoted by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{n}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+ The incident ray can be decomposed into a component perpendicular to the
+ surface 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{i}_{
+\backslash
+perp}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and a component parallel to the surface 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{i}_{
+\backslash
+parallel}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{subequations}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{i}_{
+\backslash
+perp} &= 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+bm{i}  
+\backslash
+label{ray decomp perp} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{i}_{
+\backslash
+parallel} &= 
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)
+\backslash
+bm{i} 
+\backslash
+label{ray decomp parallel}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{align} 
+\backslash
+label{ray decomposition}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{subequations}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Reflection
+\end_layout
+
+\begin_layout Standard
+In reflection, the tangential component of the ray is maintained and the
+ normal component is reversed.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{r} = 
+\backslash
+bm{i}_{
+\backslash
+parallel} - 
+\backslash
+bm{i}_{
+\backslash
+perp} 
+\backslash
+label{ray reflection} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{ray decomposition}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{ray reflection}
+\end_layout
+
+\end_inset
+
+) gives the following.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{r} = 
+\backslash
+left(
+\backslash
+bm{I} - 2
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)
+\backslash
+bm{i} 
+\backslash
+label{ray reflection 2} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Refraction
+\end_layout
+
+\begin_layout Standard
+Consider a plane containing the outward normal vector of a surface and the
+ incident ray.
+ the ray hits the surface at angle 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+theta_1
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and emerges in the surface at angle 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+theta_2
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+ The originating medium is characterized by a refractive index of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(n_1
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and the medium below the surface is characterized by a refractive index
+ of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(n_2
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+ According to Snell's law, the following relationship holds.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+n_1 
+\backslash
+sin 
+\backslash
+theta_1 = n_2 
+\backslash
+sin 
+\backslash
+theta_2 
+\backslash
+label{snells law}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Let 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{t}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ denote the refracted ray.
+ The component of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{t}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ parallel to the surface relates to the incident parallel component by (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{snells law}
+\end_layout
+
+\end_inset
+
+).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+n_1 
+\backslash
+bm{i}_{
+\backslash
+parallel} = n_2 
+\backslash
+bm{t}_{
+\backslash
+parallel}   
+\backslash
+label{refact: snells 3D 1}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{ray decomp parallel}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: snells 3D 1}
+\end_layout
+
+\end_inset
+
+) gives
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{t}_{
+\backslash
+parallel} = 
+\backslash
+eta 
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)
+\backslash
+bm{i}   
+\backslash
+label{refact: snells 3D 2} 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+eta
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is the ratio of refractive indices.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+eta = 
+\backslash
+frac{n_1}{n_2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The magnitude of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{t}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is equal to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{i}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, which is equal to 1 (by definition).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+1 = 
+\backslash
+bm{t}_{
+\backslash
+parallel}^T
+\backslash
+bm{t}_{
+\backslash
+parallel} + 
+\backslash
+bm{t}_{
+\backslash
+perp}^T
+\backslash
+bm{t}_{
+\backslash
+perp} = 
+\backslash
+bm{t}_{
+\backslash
+parallel}^T
+\backslash
+bm{t}_{
+\backslash
+parallel} + t_{
+\backslash
+perp}^2 
+\backslash
+label{refact: mag constraint}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: snells 3D 2}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint}
+\end_layout
+
+\end_inset
+
+) gives the following.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+t_{
+\backslash
+perp}^2 = 1 - 
+\backslash
+eta^2 
+\backslash
+bm{i}^T 
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)^T
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)
+\backslash
+bm{i} 
+\backslash
+label{refact: mag constraint 2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+From the geometry, the following holds.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{i}^T 
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)^T
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)
+\backslash
+bm{i} = 
+\backslash
+bm{i}_{
+\backslash
+parallel}^T
+\backslash
+bm{i}_{
+\backslash
+parallel}  = 
+\backslash
+sin^2 
+\backslash
+theta_1 
+\backslash
+label{refact: mag constraint 3}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Another equivalent expression follows directly from simplification.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{i}^T 
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)^T
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)
+\backslash
+bm{i} = 1-(
+\backslash
+bm{i}^T
+\backslash
+bm{n})^2 
+\backslash
+label{refact: mag constraint 4}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Finaly, by noting that 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+cos 
+\backslash
+theta_1 = -
+\backslash
+bm{i}^T
+\backslash
+bm{n}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, it is clear that (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 3}
+\end_layout
+
+\end_inset
+
+) and (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 4}
+\end_layout
+
+\end_inset
+
+) are consistent.
+ Finally, substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 3}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 2}
+\end_layout
+
+\end_inset
+
+) shows wwe area also consistent with Snell's law (as intended).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+eta^2 
+\backslash
+sin^2 
+\backslash
+theta_1 = 1-t_{
+\backslash
+perp}^2 = t_{
+\backslash
+parallel}^2=
+\backslash
+sin^2 
+\backslash
+theta_2 
+\backslash
+label{refact: mag constraint 2b}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 4}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 2}
+\end_layout
+
+\end_inset
+
+) gives the follownig.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+t_{
+\backslash
+perp}^2 = 1 - 
+\backslash
+eta^2 
+\backslash
+left(1-(
+\backslash
+bm{i}^T
+\backslash
+bm{n})^2
+\backslash
+right) 
+\backslash
+label{refact: mag constraint 5}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The vector 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{t}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ can be expressed as follows.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{t} = 
+\backslash
+bm{t}_{
+\backslash
+parallel} + 
+\backslash
+bm{t}_{
+\backslash
+perp} = 
+\backslash
+eta 
+\backslash
+left(
+\backslash
+bm{I} - 
+\backslash
+bm{n}
+\backslash
+bm{n}^T
+\backslash
+right)
+\backslash
+bm{i} - t_{
+\backslash
+perp} 
+\backslash
+bm{n} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 3}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 2}
+\end_layout
+
+\end_inset
+
+) gives the following.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+t_{
+\backslash
+perp}^2 = 1 - 
+\backslash
+eta^2 
+\backslash
+sin^2 
+\backslash
+theta_1 
+\backslash
+label{refact: mag constraint 6}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+When 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{refact: mag constraint 6}
+\end_layout
+
+\end_inset
+
+ is equal to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(0
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, the angle is referred to as the critical angle 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bar{
+\backslash
+theta}_1
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, and the ray instead reflects from the surface.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bar{
+\backslash
+theta}_1 = 
+\backslash
+asin
+\backslash
+eta^{-1}  
+\backslash
+label{refact: mag constraint 6}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Diffuse Reflection
+\end_layout
+
+\begin_layout Standard
+Surface reflections can be diffuse, e.g., Lambertian.
+ Diffuse surfaces can be modeling in ray tracing applications by sampling
+ reflection functions 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite[Ch.
+ 14]{Pharr}
+\end_layout
+
+\end_inset
+
+.
+ The basic idea involves the following steps.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Detect the ray hit against surface.
+\end_layout
+
+\begin_layout Enumerate
+Compute the surface normal at the hit location (usually known from geometry).
+\end_layout
+
+\begin_layout Enumerate
+Sample a cosine-weighted vector in the hemisphere around the normal.
+\end_layout
+
+\begin_layout Enumerate
+Transform the sampled vector to global coordinates (if needed).
+\end_layout
+
+\begin_layout Enumerate
+Continue the ray path using this new direction.
+\end_layout
+
+\begin_layout Standard
+One might be surprised the angle of incidence does not matter.
+ This is because the microgeometry is assumed to be so rough (at the microscopic
+ level) that the local surface normals are randomly oriented, which washes
+ out the incident angle.
+ This broad area will be limited in scope herein to Lambertian reflection.
+ In Lambertian reflection (or emission), the radiance is proportional to
+ the cosine of the angle form the surface normal.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+dP 
+\backslash
+propto 
+\backslash
+cos
+\backslash
+theta d
+\backslash
+omega
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The reason for the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+cos 
+\backslash
+theta
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ term is that a differential area patch on the reflected surface would have
+ a projected area that is equal to the cosine of the angle away from the
+ outward normal.
+ So if the ray were a small bundle hitting the surface, only a cosine fraction
+ of the bundle would be reflected in any direction, e.g., when viewed from
+ the side, the surface is infinitly small, and there is no reflection in
+ that direction.
+ The differential solid angles relate to sperical angles (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+theta,
+\backslash
+phi
+\backslash
+)
+\end_layout
+
+\end_inset
+
+) by the following well-known formula.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+d
+\backslash
+omega = 
+\backslash
+sin
+\backslash
+theta d
+\backslash
+theta d
+\backslash
+phi
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+In practice, a Lambertian occurs in every direction.
+ For ray tracking, one can cachieve this effect by probabilistic sampling.
+ The differential probability is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+dp = 
+\backslash
+frac{1}{
+\backslash
+pi} 
+\backslash
+cos
+\backslash
+theta d
+\backslash
+omega = 
+\backslash
+frac{1}{
+\backslash
+pi} 
+\backslash
+cos
+\backslash
+theta 
+\backslash
+sin
+\backslash
+theta d
+\backslash
+theta d
+\backslash
+phi 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where division by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+pi
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is necessary for the density function to integrate to 1.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+int_0^{2
+\backslash
+pi} 
+\backslash
+int_0^{
+\backslash
+pi/2}
+\backslash
+frac{1}{
+\backslash
+pi} 
+\backslash
+cos
+\backslash
+theta 
+\backslash
+sin
+\backslash
+theta d
+\backslash
+theta d
+\backslash
+phi=1
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Therfore, the joint PDF of (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+theta,
+\backslash
+phi
+\backslash
+)
+\end_layout
+
+\end_inset
+
+) is given by
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+f_{
+\backslash
+Theta 
+\backslash
+Phi}(
+\backslash
+theta,
+\backslash
+phi)=f_{
+\backslash
+Theta}(
+\backslash
+theta)f_{
+\backslash
+Phi}(
+\backslash
+phi) 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(f_{
+\backslash
+Theta}(
+\backslash
+theta)
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(f_{
+\backslash
+Phi}(
+\backslash
+phi)
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ are given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{subequations}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+f_{
+\backslash
+Theta}(
+\backslash
+theta)&=2
+\backslash
+cos
+\backslash
+theta 
+\backslash
+sin
+\backslash
+theta 
+\backslash
+label{dif ref: f theta} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+f_{
+\backslash
+Phi}(
+\backslash
+phi) &=
+\backslash
+frac{1}{2
+\backslash
+pi}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{subequations}
+\end_layout
+
+\end_inset
+
+Define 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(z
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(r
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ as follows.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{subequations}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+z &= 
+\backslash
+cos 
+\backslash
+theta 
+\backslash
+label{dif ref: z=costheta} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+r &= 
+\backslash
+sin 
+\backslash
+theta 
+\backslash
+label{dif ref: r=sintheta}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{align} 
+\backslash
+label{dif ref: r and z}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{subequations}
+\end_layout
+
+\end_inset
+
+The derivative of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(r
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ with respect to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+theta
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{dr}{d
+\backslash
+theta}=
+\backslash
+cos
+\backslash
+theta 
+\backslash
+label{dif ref: drdtheta}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Integrating (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{dif ref: f theta}
+\end_layout
+
+\end_inset
+
+) gives the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+1=
+\backslash
+int_0^{
+\backslash
+pi/2} f_{
+\backslash
+Theta}(
+\backslash
+theta)d
+\backslash
+theta = 
+\backslash
+int_0^{
+\backslash
+pi/2} 2
+\backslash
+cos 
+\backslash
+theta 
+\backslash
+sin 
+\backslash
+theta d
+\backslash
+theta 
+\backslash
+label{dif ref: integ ftheta}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{dif ref: r=sintheta}
+\end_layout
+
+\end_inset
+
+) and (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{dif ref: drdtheta}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{dif ref: integ ftheta}
+\end_layout
+
+\end_inset
+
+) gives the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+int_0^{1} 2 r dr  = 
+\backslash
+int_0^{1} f_R(r) dr 
+\backslash
+hspace{4 pt} , 
+\backslash
+label{dif ref: integ fr}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(f_R
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is (evidently) the density of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(r
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+f_Z(z) = 2r
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Define 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(u
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ as follows.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+u=r^2
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The derivative is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{du}{dr}=2r 
+\backslash
+label{dif ref: dudr}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{dif ref: dudr}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{dif ref: integ fr}
+\end_layout
+
+\end_inset
+
+) gives 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+int_0^{1} 2r dr = 
+\backslash
+int_0^{1} f_U(u) du 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(u
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ evidently has a uniform distribution.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+f_U(u)=1
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The following relationship follows from (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{dif ref: r and z}
+\end_layout
+
+\end_inset
+
+).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+z=
+\backslash
+sqrt{1-r^2}=
+\backslash
+sqrt{1-u}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+ In summary, one can produce 
+\begin_inset Quotes eld
+\end_inset
+
+cosine-weighted hemisphere sampling
+\begin_inset Quotes erd
+\end_inset
+
+ using two uniformly distributed random variables (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(u_1,u_2
+\backslash
+)
+\end_layout
+
+\end_inset
+
+).
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{subequations}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+phi &= 2 
+\backslash
+pi u_2 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+r    &= 
+\backslash
+sqrt{u_1} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+x    &= r 
+\backslash
+cos 
+\backslash
+phi 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+y    &= r 
+\backslash
+sin 
+\backslash
+phi 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+z    &= 
+\backslash
+sqrt{1-u_1} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{subequations}
+\end_layout
+
+\end_inset
+
+This result is consistent with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+cite[p.
+ 779]{Pharr}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Surface Geometry
+\end_layout
+
+\begin_layout Standard
+Several surfaces are described herein that are common in optical systems.
+ There are three items of interest: (1) surface constraint; (2) surface
+ gradient; and (3) ray intersection.
+ An incident ray has an origin 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{o}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and a direction 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{d}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{r}(t) = 
+\backslash
+bm{o} + t 
+\backslash
+bm{d} 
+\backslash
+label{sg: ray}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+Technically, a line 3D space is the intersection of two planes, and hence
+ provides to constraints on 3D space.
+ The intersecting surface provides an third constraint.
+ With three constraints, a 3D point of intersection can be found.
+ This involves a nonlinear three-dimensional system.
+ The same result can be obtained by substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sg: ray}
+\end_layout
+
+\end_inset
+
+) into the constraint defining the surface, resulting in a single scalar
+ equation involving 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(t
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ that can be squared and minimized.
+ If there is an intersection (a ray may miss a surface such as a cylinder)
+ the minimum will be zero.
+ The elements of (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{o},
+\backslash
+bm{d}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+) are defined as follows.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{subequations}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{o}^T &= 
+\backslash
+begin{bmatrix} x_0 & y_0 & z_0 
+\backslash
+end{bmatrix} 
+\backslash
+
+\backslash
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{d}^T &= 
+\backslash
+begin{bmatrix} d_x & d_y & d_z 
+\backslash
+end{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{subequations}
+\end_layout
+
+\end_inset
+
+In general, each optical surface can have a local coordinate system and
+ have both translational and rotational offsets from a global frame.
+ However, we shall assume an axially symmetric optical system.
+ Moreover, analytical expressions can be found for ray intersection of many
+ simple surfaces, but not for more complicated ones like aspherics.
+ To keep a common architecture, analytical expressions for ray intersections
+ will neither be developed, nor used.
+ Surface constraints, denoted by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(F
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, will have gradients denoted by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{
+\backslash
+nabla} F 
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, and corresponding outward normal vectors 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{n}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{n} = 
+\backslash
+frac{
+\backslash
+bm{
+\backslash
+nabla} F}{||
+\backslash
+bm{
+\backslash
+nabla} F||}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Plane
+\end_layout
+
+\begin_layout Standard
+A plane satisfies the following constraint.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+F(x,y,z) = a(x-x_0) + b(y-y_0) + c(z-z_0)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The graient is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{
+\backslash
+nabla} F = 
+\backslash
+begin{bmatrix} a 
+\backslash
+
+\backslash
+ b 
+\backslash
+
+\backslash
+ c 
+\backslash
+end{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sphere
+\end_layout
+
+\begin_layout Standard
+A sphere satisfies the following constraint.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+F(x,y,z) = (x-x_0)^2 + (y-y_0)^2 + (z-z_0)^2 - R^2 = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The graient is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{
+\backslash
+nabla} F = 2
+\backslash
+begin{bmatrix} x-x_0 
+\backslash
+
+\backslash
+ y-y_0 
+\backslash
+
+\backslash
+ z-z_0 
+\backslash
+end{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Cylinder
+\end_layout
+
+\begin_layout Standard
+A sphere satisfies the following constraint.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+F(x,y,z) = (x-x_0)^2 + (y-y_0)^2 - R^2 = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The graient is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{
+\backslash
+nabla} F = 2
+\backslash
+begin{bmatrix} x-x_0 
+\backslash
+
+\backslash
+ y-y_0 
+\backslash
+
+\backslash
+ 0 
+\backslash
+end{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Conic 
+\end_layout
+
+\begin_layout Standard
+Convex just describes the sign of curvature; often this is encoded into
+ a conic section form, which is also the basis for aspheres.
+ A conic section can be described by
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+z_{conic} = 
+\backslash
+frac{cr^2}{1+
+\backslash
+sqrt{1-(1+k)c^2r^2}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equaiton}
+\end_layout
+
+\end_inset
+
+where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(c
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is the curvature (inverse of radius of curvature), 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(k
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is the conic constant and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(r
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is defined as follows.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+r^2 = x^2 + y^2
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The convex constraint function is given by
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+F(x,y,z) = z - z_{conic} = 0 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The partial derivative of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(F
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ with respect to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(z
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is given by 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial z} = 1
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The constraint 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(F
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ can be expressed as
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+F=z - 
+\backslash
+frac{cr^2}{1+g} 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(g(r)
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is defined as follows.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+g(r) = 
+\backslash
+sqrt{1-(1+k)c^2r^2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The partial derivative of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(F
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ with respect to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(r^2
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2} = 
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2} + 
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial g}
+\backslash
+frac{
+\backslash
+partial g}{
+\backslash
+partial r^2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+label{conic: dFdr2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The three partials are given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{subequations}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2} &= -
+\backslash
+frac{c}{1+g} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial g} &= 
+\backslash
+frac{cr^2}{(1+g)^2} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial g}{
+\backslash
+partial r^2} &= -
+\backslash
+frac{(1+k)c^2}{2g}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{align} 
+\backslash
+label{convex partials}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{subequations}
+\end_layout
+
+\end_inset
+
+Substituting (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{convex partials}
+\end_layout
+
+\end_inset
+
+) into (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{conic: dFdr2}
+\end_layout
+
+\end_inset
+
+) gives
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2} = -
+\backslash
+frac{c}{1+g} - 
+\backslash
+frac{cr^2}{(1+g)^2}
+\backslash
+frac{(1+k)c^2}{2g}
+\end_layout
+
+\begin_layout Plain Layout
+
+= - 
+\backslash
+frac{2cg(1+g) + (1+k)c^3r^2}{2g(1+g)^2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+label{conic: dFdr2 2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The partials of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(F
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ with respect to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(x
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(y
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ follow from the chain rule.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{subequations}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial x} &= 
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2}
+\backslash
+frac{
+\backslash
+partial r^2}{
+\backslash
+partial x} = 2x
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial y} &= 
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2}
+\backslash
+frac{
+\backslash
+partial r^2}{
+\backslash
+partial y} = 2y
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{align}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{subequations}
+\end_layout
+
+\end_inset
+
+The graient is given by
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{
+\backslash
+nabla} F = 
+\backslash
+begin{bmatrix} 
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial x} 
+\backslash
+
+\backslash
+ 
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial y} 
+\backslash
+
+\backslash
+ 
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial z} 
+\backslash
+end{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+              = 
+\backslash
+begin{bmatrix} 2x
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2} 
+\backslash
+
+\backslash
+ 2y
+\backslash
+frac{
+\backslash
+partial F}{
+\backslash
+partial r^2} 
+\backslash
+
+\backslash
+ 1 
+\backslash
+end{bmatrix} 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where the partial of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(F
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ with respect to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(r^2
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is given by (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{conic: dFdr2 2}
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsection
+Asphere
+\end_layout
+
+\begin_layout Standard
+A asphere satisfies the following constraint
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+F(x,y,z) = z - 
+\backslash
+left(z_{conic} + 
+\backslash
+sum A_k r^{2k}
+\backslash
+right) = 0 
+\backslash
+hspace{4 pt} ,
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(z_{conic}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+z_{conic} = 
+\backslash
+frac{cr^2}{1+
+\backslash
+sqrt{1-(1+k)c^2r^2}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+The graient is given by the following.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{equation}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bm{
+\backslash
+nabla} F = 2
+\backslash
+begin{bmatrix} x-x_0 
+\backslash
+
+\backslash
+ y-y_0 
+\backslash
+
+\backslash
+ z-z_0 
+\backslash
+end{bmatrix}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{equation}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Other Surfaces
+\end_layout
+
+\begin_layout Standard
+In addition to the fundamental surfaces such as planes, spheres, and conics,
+ several other specialized surfaces are commonly used in advanced optical
+ systems to correct aberrations or achieve specific imaging goals.
+ Toric surfaces feature two different radii of curvature in perpendicular
+ directions, which makes them particularly useful for correcting astigmatism
+ in lenses or mirrors.
+ Biconic surfaces extend the concept of conic sections to both axes, allowing
+ for more complex curvature profiles and further refinement of optical systems.
+ Annular surfaces are defined over a ring-shaped region, often used in secondary
+ mirrors like those in Cassegrain telescopes, where light is focused through
+ a ring rather than across the full aperture.
+ Spheroids, including both oblate (flattened at the poles) and prolate (elongate
+d along the axis) forms, are variations of ellipsoids that exhibit axial
+ symmetry and are used for imaging systems requiring specific shapes.
+ Freeform surfaces are arbitrary, non-symmetric shapes that can be defined
+ by higher-order polynomial terms or splines, providing the ultimate flexibility
+ in optical design.
+ Diffractive optical elements, defined by periodic surface structures or
+ phase-modulating patterns, enable compact and light-efficient solutions
+ for beam shaping, wavelength filtering, or imaging.
+ These advanced surface types provide essential tools for custom optical
+ system design, often addressing aberrations or achieving performance that
+ cannot be obtained from simple spherical or planar elements.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "Pharr"
+literal "false"
+
+\end_inset
+
+M.
+ Pharr, et al., Physically Based Rendering, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(3^{rd}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ Ed., 2016.
+\end_layout
+
+\end_body
+\end_document
