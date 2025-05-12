@@ -5,6 +5,7 @@ def main():
     material = "N-BK7"
     material = "N-SK4"
     material = "F4"
+    material = "B270"
     get_material_info(material)
 
 def get_material_info(material):

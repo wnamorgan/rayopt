@@ -19,7 +19,8 @@ def main():
     plt.show()
 
 def get_system():
-    if False:
+    method=2
+    if method==0:
         s = ro.system_from_yaml("""
         object:
           pupil:
@@ -32,7 +33,7 @@ def get_system():
         - {}
         """)
         s.update()
-    else:
+    elif method==1:
         text = """
             S       0      0     2 AIR
             S       1.25      1     1 SCHOTT-BK|N-BK7
@@ -45,6 +46,24 @@ def get_system():
         s.object.angle = .36
         s.object.pupil.update_radius = True
         s.fields = 0, .7, 1.
+        s.update()
+    else:
+        text = """
+            S       0      0      10 AIR
+            S       7.818  1       9 SCHOTT-BK|N-BK7
+            S       0      8.2     9 AIR
+            S       0      10.0     2 AIR
+            """
+        columns = "type roc distance radius material"
+        s = system_from_text(text, columns.split(),
+        description="four element double gauss, intermediate optical design")
+        s.object.angle = 20
+        s.object.pupil.update_radius = True
+        s.fields = 0, .7, 1.
+
+        s[1].conic = -1.81700
+        s[1].aspherics = [0,2.93e-04, 0.0, 0.0, 0.0]
+
         s.update()
     return s
 
