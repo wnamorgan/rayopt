@@ -2537,7 +2537,20 @@ cite[p.
 \end_layout
 
 \begin_layout Section
-Surface Geometry
+Surface Geometry 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+label{sec: surf geo}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4017,7 +4030,7 @@ bm{
 \backslash
 nabla} F_{conic} - 
 \backslash
-sum 2k A_k r^{2k-1} 
+sum k A_k r^{2(k-1)} 
 \backslash
 begin{bmatrix}
 \end_layout
@@ -4121,6 +4134,184 @@ d along the axis) forms, are variations of ellipsoids that exhibit axial
  These advanced surface types provide essential tools for custom optical
  system design, often addressing aberrations or achieving performance that
  cannot be obtained from simple spherical or planar elements.
+\end_layout
+
+\begin_layout Section
+Ray Tracing Algorithm
+\end_layout
+
+\begin_layout Standard
+Define an axially symmetric optical system composed of surface elements,
+ as described in Section 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ref{sec: surf geo}
+\end_layout
+
+\end_inset
+
+.
+ An initial ray is specified by an origin point and a direction vector (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{o},
+\backslash
+bm{d}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+).
+ The ray is tested against all surface elements in the system to determine
+ possible intersections.
+ Each surface returns a direction scale factor 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(t
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, such that the point 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(
+\backslash
+bm{r}(t)=
+\backslash
+bm{o} + t
+\backslash
+bm{d}
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ minimizes the separation between the ray and the surface.
+ If no intersection occurs, the minimal separation remains nonzero.
+ If the ray intersects a surface in the direction of travel, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(t>0
+\backslash
+)
+\end_layout
+
+\end_inset
+
+.
+ Conversely, if 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(t<0
+\backslash
+)
+\end_layout
+
+\end_inset
+
+, the ray would need to propagate backward to reach the surface.
+ The surface with the smallest positive 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+(t
+\backslash
+)
+\end_layout
+
+\end_inset
+
+ and zero separation (i.e., true intersection) is selected for further evaluation.
+ At the point of intersection, the ray is redirected based on the physical
+ properties of the surface (e.g., reflection, refraction, or absorption).
+ This process repeats until one of three termination conditions is met:
+\end_layout
+
+\begin_layout Enumerate
+The ray intersects the detector surface.
+\end_layout
+
+\begin_layout Enumerate
+The ray exits the system through the aperture.
+\end_layout
+
+\begin_layout Enumerate
+A maximum number of redirections is exceeded.
+\end_layout
+
+\begin_layout Standard
+If the ray terminates at the detector surface, the intersection point is
+ recorded for later evaluation of the detector's response.
+ A large number of rays are propagated through the system, and the resulting
+ intersection points with the detector plane are collected.
+ The number of rays landing within each quadrant of a four-quadrant detector
+ (4QD) is tallied to compute the detector's spatial transfer function.
+\end_layout
+
+\begin_layout Subsection
+Software Architecture
+\end_layout
+
+\begin_layout Standard
+I will have a "system" class that has "elements"; similar to rayopt.
+ Each element will have a surface constraint evaluator (F) function, and
+ a gradient method.
+ The element will have an intersect method that will take a ray in and produce
+ a "t" out.
+ The system will have a "propagate" method that will loop over all elements
+ with a ray origin/direction and find the minimum t that is greater than
+ epsiilon.
+ The element that has this t will have a "redirect" method that will either
+ lambertian reflect or refract, producing a new direction.
+ The redirect method will also provide a "continue" flag that will tell
+ system if the element wants the ray to stop propagation.
+ The system will maintain a running list of redirections that will have
+ the following items: (origin,direction).
+ The system itself will terminate propagation i the maximum number of redirectio
+ns is hit.
+ 
 \end_layout
 
 \begin_layout Bibliography

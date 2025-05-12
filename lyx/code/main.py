@@ -1,10 +1,10 @@
 # Core vector math can be done using NumPy
 import numpy as np
-from ray import Ray
-from hit import Hit
-from plane import PlaneElement
-from system import OpticalSystem
-from surface import Reflective
+from raytracer.ray import Ray
+from raytracer.hit import Hit
+from raytracer.plane import PlaneElement
+from raytracer.system import OpticalSystem
+from raytracer.surface import Reflective
 
 def make_system():
     plane = PlaneElement(point=[0, 0, 0], normal=[0, 0, 1], behavior=Reflective())
