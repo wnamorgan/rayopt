@@ -6,5 +6,7 @@
 /.coverage.*
 /.coverage
 .ipynb_checkpoints
-__pycache__/
 rayopt-env/
+__pycache__
+*.lyx#
+*.lyx~
