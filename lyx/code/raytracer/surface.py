@@ -19,8 +19,9 @@ class Reflective(Material):
         return new_ray, True
 
 class Absorbing(Material):
-    def redirect(self, ray: Ray, hit: Hit):
-        return None, False
+    def redirect(self, ray, hit):
+        new_ray = Ray(hit.point,ray.direction)
+        return new_ray, False
 
 
 class Refractive(Material):
