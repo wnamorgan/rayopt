@@ -7,46 +7,72 @@ import plotly.express as px
 import pandas as pd
 from concurrent.futures import ProcessPoolExecutor
 import time
-
+from lens import *
+from scipy.ndimage import gaussian_filter
 def main():
-    s = get_system()
+    theta =0
+
+    (lens, hD, dD) = (ACL1815U(), 2.8, 5.33) # Baseline Lens, Baseline Detector (hd = 2.8 nominal)
+    (lens, hD, dD) = (EO_15889(), 2, 5.33) # Baseline Lens, Baseline Detector (hd = 2.8 nominal)
+    #(lens, hD, dD) = (ACL1815U(), 5.3, 14.1) # Baseline lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.3 nominal)
+    #(lens, hD, dD) = (ACL2520U(), 6.0, 14.1) # Big Thor lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.0 nominal)
+    #(lens, hD, dD) = (EO_16982(), 2.0, 14.1) # Big EO lens, Big Detector
+    (b,db) = (6,2)
+    if (dD > 10):
+        (b, db) = (12,3)
+    FigName = f"Tracing_{theta}_{lens.name}_{dD}_{hD}.jpg"
+    s = get_system(lens,hD)
 
     fig, ax = plt.subplots()
-    if True:
+    if False:
         geo_trace(s,ax)
         single_ray(s,ax)
     else:
-        N=400
+        
+        N=500
         start = time.time()
-        direction = np.array([0.2, 0.0, 1.0])     # Pointing along +z
+        
+        
+        direction = np.array([np.sin(np.deg2rad(theta)), 0.0, np.cos(np.deg2rad(theta))])     # Pointing along +z
+        #direction = np.array([0.2, 0.0, 1]) 
         if True:
             points = ray_bundle(s,direction,N)
         else: # This is actually slower....
             points = parallel_ray_bundle(s,direction,N)
         end = time.time()
         print(f"Took {end - start:.2f} seconds")    
-        (az,el) = calc_ratios(points,5.3/2)
-        R = 1.0/s[1].curvature
-        n = s.refractive_index(1064e-9,1)
-        f = R/(n-1)
-        D = 18
-        hd = 10 - s[-1]._distance # assumes no field stop, i.e., s[-1] is relative to back of lens
-        rs = D*hd/(2*f)
-        eps_max = rs/(f-hd)
-        print(f"rs = {rs} mm")
+        (az,el) = calc_ratios(points,dD/2)
         print(f"(rho_az,rho_el) = ({az},{el})")
-        print(np.arctan(eps_max)*57.1)
-        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/2))
+
+
+        
+        xedges = np.linspace(-1,1,int(N/4))*b
+        yedges = xedges
+        #hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/4))
+        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[xedges,yedges])
     
+        xtnt = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+        #xtnt = [-b, b, -b, b]
         # Plot the heatmap
-        plt.imshow(hist.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='equal')
-        plt.colorbar(label='Hit count per bin')
+        
+        hist_smoothed = gaussian_filter(hist, sigma=2)
+        image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
+        psi = np.linspace(0,2*np.pi,500)
+        ax.plot((dD/2)*np.cos(psi),(dD/2)*np.sin(psi),color='white',linewidth=5)
+        fig.colorbar(image, label='Hit count per bin')
+        ax.set_xlabel('x (mm)')
+        ax.set_ylabel('y (mm)')
+        ax.set_xticks(np.arange(-b, b+1, db))  # Ticks at 0, 2, 4, 6, 8
+        ax.set_xticks(np.arange(-b, b+1, db))  # Ticks at 0, 2, 4, 6, 8
+        plt.savefig(FigName,dpi=400) # 14.1 
 
     plt.show()
+    
 
 
-def calc_ratios(points,rD):
-    (A,B,C,D,T) = (0,0,0,0,0)
+def calc_ratios(points,rD,b=0):
+    (A,B,C,D) = (b,b,b,b)
+    T = A+B+C+D
     for point in points:
         x = point[0]
         y = point[1]
@@ -88,11 +114,13 @@ def single_ray(s,ax):
     
 
 def ray_bundle(s,direction,N):
-    R_l = 18/2.0
-    R_d = 5.3/2.0
+    R_l = s[1].radius
     # Create a meshgrid 1"x1"
-    x = np.linspace(-1, 1, N)*25.4/2.0
-    y = np.linspace(-1, 1, N)*25.4/2.0
+    x = np.linspace(-1, 1, N)*R_l*1.4 
+    y = np.linspace(-1, 1, N)*R_l*1.4
+
+    #x = np.linspace(-1, 1, N)*25.4/2.0
+    #y = np.linspace(-1, 1, N)*25.4/2.0
 
     # Initialize the geometric tracer
     tracer = GeometricTrace(s)
@@ -106,21 +134,21 @@ def ray_bundle(s,direction,N):
     points = []
     for i in range(N):
         for j in range(N):
-
-            ray_positions = evaluate_point(((x[i],y[j]),direction,tracer))
-
-            if (np.any(np.isnan(ray_positions))==False):
-                r_l = np.sqrt(ray_positions[1,0]**2 + ray_positions[1,1]**2)
-                r_d = np.sqrt(ray_positions[-1,0]**2 + ray_positions[-1,1]**2)
-                if ( (r_l <= R_l) ): # Later, I will check (r_d <= R_d) 
-                    points.append(ray_positions[-1,0:2].copy())
+            r = np.sqrt(x[i]**2 + y[j]**2)
+            if True:# (r < R_l): - No, you can't limit this or you will miss rays that come in from the side of the lens at angle
+                ray_positions = evaluate_point(((x[i],y[j]),direction,tracer))
+    
+                if (np.any(np.isnan(ray_positions))==False):
+                    r_l = np.sqrt(ray_positions[1,0]**2 + ray_positions[1,1]**2)
+                    r_d = np.sqrt(ray_positions[-1,0]**2 + ray_positions[-1,1]**2)
+                    if ( (r_l <= R_l) ): # Later, I will check (r_d <= R_d) 
+                        points.append(ray_positions[-1,0:2].copy())
     points = np.array(points)
     return points
 
 
 def parallel_ray_bundle(s,direction,N):
-    R_l = 18/2.0
-    R_d = 5.3/2.0    
+    R_l = 18/2.0 
     # Generate a grid of points
     x = np.linspace(-1, 1, N)*25.4/2.0
     y = np.linspace(-1, 1, N)*25.4/2.0
@@ -164,7 +192,8 @@ def three_d_ray(system):
     # Create a ray origin0 0and direction (in 3D)
     origin = np.array([-10.5, 0.0, -1.0])      # 1qmm in front of lens, off-axis in x/y
     direction = np.array([0.2, 0.0, 1.0])     # Pointing along +z
-    origin = np.array([7.0, 0.0, -1.0])      # 1qmm in front of lens, off-axis in x/y
+    direction = np.array([0.0, 0.0, 1.0])     # Pointing along +z
+    origin = np.array([9.0, 0.0, 0.0])      # 1qmm in front of lens, off-axis in x/y
     
     # Initialize the geometric tracer
     tracer = GeometricTrace(system)
@@ -186,31 +215,29 @@ def three_d_ray(system):
         print(f"Surface {i}: {pos[0]}")
     return ray_positions
 
-def get_system():
- 
-
-    # Last element is detector and is 2.65mm.  Left at 5.6 (arbirary) to evaluate hits post processing
-    text = """
+def get_system(lens=ACL1815U(), hd = 2.8):
+    
+    text = f"""
         S       0      0      15 AIR
-        S       7.818  1       9 1.52
-        S       0      8.2     9 AIR
-        S       0      7.22    12.0 AIR
+        S       {lens.roc}  1       {lens.D/2} 1.52
+        S       {lens.s2_roc}      {lens.tc}     {lens.D/2} AIR
+        S       0      {lens.BFL-hd}    12.0 AIR
         """
+    
     columns = "type roc distance radius material"
     s = system_from_text(text, columns.split(),
     description="four element double gauss, intermediate optical design")
-    #s.object.angle = 20
-    #s.object.pupil.update_radius = True
-    #s.fields = 0, .7, 1.
 
-    s[1].conic = -1.81700
-    s[1].aspherics = [0,2.93e-04, 0.0, 0.0, 0.0]
+    s[1].conic = lens.conic
+    s[1].aspherics = lens.aspherics
+
+
     s.object.angle = 20
     s.object.pupil.update_radius = True
     s.fields = 0, .7, 1.
     s.wavelengths=[1064e-9]
     s.update()
-    
+    print(s)
     return s
 
 if __name__=='__main__':

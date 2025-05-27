@@ -10,3 +10,5 @@ rayopt-env/
 __pycache__
 *.lyx#
 *.lyx~
+*.jpg
+*.png
