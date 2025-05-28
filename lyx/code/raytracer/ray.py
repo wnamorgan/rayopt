@@ -13,3 +13,7 @@ class Ray:
     def offset(self, epsilon=1e-6):
         return Ray(self.point(epsilon), self.direction)
     
+    def copy(self):
+        return Ray(self.origin.copy(),self.direction.copy())
+
+    

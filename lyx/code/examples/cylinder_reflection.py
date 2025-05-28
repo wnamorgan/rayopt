@@ -19,10 +19,10 @@ from raytracer.surface import Reflective
 def make_system():
     system = OpticalSystem()
     # Reflective plane at z = 0
-    system.add_elements(PlaneElement(point=[0, 0, 0], normal=[0, 0, 1], material=Reflective(), name = 'base'))
+    system.add_elements(PlaneElement(center=[0, 0, 0], orientation=[0, 0, 0], material=Reflective(), name = 'base'))
 
     # Reflective cylinder centered on z-axis, radius = 1, infinite height
-    system.add_elements(CylinderElement(center=[origin[0], origin[1], 0], axis=[0, 0, 1], radius=radius, 
+    system.add_elements(CylinderElement(center=[origin[0], origin[1], 0], orientation=[0, 0, 0], radius=radius, 
                                         height = 5.0, material=Reflective(), name = 'cylinder'))
 
     return system

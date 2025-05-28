@@ -17,10 +17,7 @@ from raytracer.system import OpticalSystem
 from raytracer.detector import calc_ratios
 
 # Select Lens
-(lens,offset,dD) = (ACL2520(),2.8,5.33)
-(lens,offset,dD) = (ACL1815(),2.8,5.33)
-(lens,offset,dD) = (AL1815(),0.0,5.33)
-#(lens,offset,dD) = (AL75150(),0.0,5.33) 
+(lens1, lens2, offset, dD) = (AL1815(), AL75150(), 0.0, 5.33) 
 
 
 
@@ -29,24 +26,39 @@ def make_system():
 
 
     # Create refractive materials
-    air_to_glass = Refractive(n_top=1.0, n_bottom=lens.n)
-    glass_to_air = Refractive(n_top=lens.n, n_bottom=1.0)
-    
-    # Surfaces: plane at z=0 (termination), lens back (z=10), asphere front (z=22)
-    apex=lens.tc + lens.fb
-    plane_termination = PlaneElement(center=[0, 0, offset],       orientation = [0.0,0.0,0], material=Absorbing(),  name="Base Plane")
-    lens_back         = PlaneElement(center=[0, 0, apex-lens.tc], orientation = [0.0,0.0,0], material=glass_to_air, name="Lens Back Surface")
-    lens_front = AsphericElement(
-        center=[0, 0, apex],  # Apex at z=22 (lens is 12mm thick)
+    air_to_lens1 = Refractive(n_top=1.0, n_bottom=lens1.n)
+    lens1_to_air = Refractive(n_top=lens1.n, n_bottom=1.0)
+    air_to_lens2 = Refractive(n_top=1.0, n_bottom=lens2.n)
+    lens2_to_air = Refractive(n_top=lens2.n, n_bottom=1.0)
+
+
+    apex=200.0
+    lens1_front = AsphericElement(
+        center=[0, 0, apex],  
         orientation=np.array([0.0,0.0,0.0]),
-        lens=lens,
-        material=air_to_glass,
-        name="Aspheric Front Surface"
+        lens=lens1,
+        material=air_to_lens1,
+        name="Lens 1 Front Surface"
     )
+    lens1_back         = PlaneElement(center=lens1_front.center + np.array([0, 0, - lens1.tc]), orientation = [0.0,0.0,0], material=lens1_to_air, name="Lens 1 Back Surface")    
+
+    lens2_back         = PlaneElement(center=lens1_back.center +  np.array([0, 0, - lens1.fb - lens2.fb]), orientation = [0.0,180.0,0], material=lens2_to_air, name="Lens 2 Back Surface")    
     
+    lens2_front = AsphericElement(
+        center=lens2_back.center + np.array([0, 0, - lens2.tc]),  
+        orientation=np.array([0.0,180.0,0.0]),
+        lens=lens2,
+        material=air_to_lens2,
+        name="Lens 2 Front Surface"
+    )
+
+    plane_termination = PlaneElement(center=[0, 0, offset],       orientation = [0.0,0.0,0], material=Absorbing(),  name="Base Plane")
+
     system = OpticalSystem()
-    system.add_elements(lens_front)
-    system.add_elements(lens_back)
+    system.add_elements(lens1_front)
+    system.add_elements(lens1_back)
+    system.add_elements(lens2_back)
+    system.add_elements(lens2_front)
     system.add_elements(plane_termination)
     return system
 
@@ -58,9 +70,9 @@ def single_ray():
     theta = np.deg2rad(180)
 
     
-    hR = np.ceil(lens.fb/10)*10*1.5
+    hR = 250.0
 
-    ray = Ray(origin=[0.0, 5.0, hR], direction=[np.sin(theta)*np.cos(psi), np.sin(theta)*np.sin(psi), np.cos(theta)])
+    ray = Ray(origin=[3.0, 0.0, hR], direction=[np.sin(theta)*np.cos(psi), np.sin(theta)*np.sin(psi), np.cos(theta)])
 
     start_time = time.perf_counter()
     history = system.propagate(ray)
@@ -86,8 +98,8 @@ def single_ray():
     #ax[0].axis('equal')
     circle = Circle((0,0), 25.0, edgecolor='black', facecolor='none', linewidth=2)
     ax[0].add_patch(circle)
-    ax[0].set_xlim(-15,15)
-    ax[0].set_ylim(-15,15)
+    ax[0].set_xlim(-75,75)
+    ax[0].set_ylim(-75,75)
 
     ax[1].plot(points[:, 1], points[:, 2], 'o-')
     ax[1].grid(True)
@@ -96,13 +108,12 @@ def single_ray():
 
 def ray_bundle(s,direction,N):
 
-    R_l = 18/2.0
-    R_d = 5.3/2.0
+    R_b = 6.0/2.0 # input beam size
     # Create a meshgrid 1"x1"
-    x = np.linspace(-1, 1, N)*25.4/2.0
-    y = np.linspace(-1, 1, N)*25.4/2.0
+    x = np.linspace(-1, 1, N)*3.0
+    y = np.linspace(-1, 1, N)*3.0
 
-    hR = np.ceil(lens.fb/10)*10*1.2
+    hR = 250.0
 
     # Normalize direction
     direction = direction / np.linalg.norm(direction)
@@ -117,18 +128,16 @@ def ray_bundle(s,direction,N):
             ray = Ray(origin=[x[i], y[j], hR], direction=direction)
             history = s.propagate(ray)
             ray_final = history[-1][1].origin
-            r_l = np.sqrt(ray_final[0]**2 + ray_final[1]**2)
-            if ( (r_l <= R_l) ): 
+            r_l = np.sqrt(ray.origin[0]**2 + ray.origin[1]**2)
+            if ( (r_l <= R_b) ): 
                 points.append(ray_final.copy())
     points = np.array(points)
     return points
 
 def RayBundleSim(N=100,theta=np.deg2rad(180)):
         
-        (b,db) = (6,2)
-        if (dD > 10):
-            (b, db) = (12,3)
-        FigName = f"Tracing_{theta}_{lens.name}_{dD}_{offset}.jpg"
+        b=40
+        FigName = f"Tracing_{theta}_Expander.jpg"
 
         s = make_system()
         start = time.time()
@@ -137,13 +146,17 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
         points = ray_bundle(s,direction,N)
         end = time.time()
         print(f"Took {end - start:.2f} seconds")    
-        (az,el) = calc_ratios(points,5.3/2)
-        print(f"(rho_az,rho_el) = ({az},{el})")
-        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/2))
-    
+
+        #hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/2))
+        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[int(N/2),int(N/2)], range=[[-40, 40],[-40, 40]])
+
         # Plot the heatmap
-        plt.imshow(hist.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='equal')
-        plt.colorbar(label='Hit count per bin')    
+        fig, ax = plt.subplots()
+        image = ax.imshow(hist.T, origin='lower', extent=[-40, 40, -40, 40], aspect='equal')
+        fig.colorbar(image, label='Hit count per bin')  
+        psi = np.linspace(0,2*np.pi,500)
+        ax.plot((75/2)*np.cos(psi),(75/2)*np.sin(psi),color='white',linewidth=5)
+
 
 
         fig, ax = plt.subplots()
@@ -159,14 +172,14 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
         hist_smoothed = gaussian_filter(hist, sigma=2)
         image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
         psi = np.linspace(0,2*np.pi,500)
-        ax.plot((dD/2)*np.cos(psi),(dD/2)*np.sin(psi),color='white',linewidth=5)
+        ax.plot((75/2)*np.cos(psi),(75/2)*np.sin(psi),color='white',linewidth=5)
         fig.colorbar(image, label='Hit count per bin')
 
 
 
 def main():
-    single_ray()
-    #RayBundleSim(100,theta=np.deg2rad(180))
+    #single_ray()
+    RayBundleSim(1000,theta=np.deg2rad(180))
     plt.show()
 
 if __name__ == "__main__":

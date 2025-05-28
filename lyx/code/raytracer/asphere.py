@@ -4,9 +4,8 @@ from raytracer.hit import Hit
 from scipy.optimize import bisect
 
 class AsphericElement(Element):
-    def __init__(self, center, lens, material, name):
-        super().__init__(material, name)
-        self.center = np.array(center, dtype=float)
+    def __init__(self, center, orientation, lens, material, name):
+        super().__init__(material,center, orientation, name)
         self.curvature = 1/lens.roc    # 1 / radius of curvature
         self.k = lens.conic            # Conic constant
         self.coeffs = lens.aspheric    # List of A4, A6, A8, ...
@@ -30,15 +29,19 @@ class AsphericElement(Element):
         sqrt_term = np.sqrt(1 - (1 + k) * c**2 * r2)
         base = (c * r2) / (1 + sqrt_term)
         #poly = sum(a * r2**((i+2)//2) for i, a in enumerate(self.coeffs))
-        poly = self.coeffs[0]*r2**2
+        poly=0.0
+        for k, coeff in enumerate(self.coeffs):
+            poly = poly + coeff*(r2**(k+1))
+        #poly = self.coeffs[0]*r2**2
         return -(base + poly)
 
-    def intersect(self, ray):
+    def intersect(self, ray_global):
+        ray_local = self.ray_local_from_global(ray_global)
         def f(t):
-            point = ray.point(t) - self.center
+            point = ray_local.point(t) #- self.center
             return self.surface_function(*point)
         def f_cylinder(t):
-            point = ray.point(t) - self.center
+            point = ray_local.point(t) #- self.center
             return self.cylinder_function(*point)
         
         try:
@@ -51,12 +54,15 @@ class AsphericElement(Element):
         except ValueError:
             return None  # No intersection
 
-        hit_point = ray.point(t_hit)
-        rel_hit = hit_point - self.center
-        if np.linalg.norm(rel_hit[:2]) > self.aperture_radius:
+        
+        hit_point_local = ray_local.point(t_hit)
+        if np.linalg.norm(hit_point_local[:2]) > self.aperture_radius:
             return None  # Outside aperture
 
-        return Hit(t_hit, ray.point(t_hit), self.normal(hit_point), self)
+        hit_point_global = self.center + np.dot(self.R_G_from_L,hit_point_local)
+        un_local = self.normal(hit_point_local)
+        un_global = np.dot(self.R_G_from_L,un_local)        
+        return Hit(t_hit, hit_point_global, un_global, self)
 
     def normal(self, point):
         # Placeholder: Numerically compute gradient of the surface function

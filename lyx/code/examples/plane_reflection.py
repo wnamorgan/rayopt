@@ -13,7 +13,7 @@ from raytracer.system import OpticalSystem
 from raytracer.surface import Reflective
 
 def make_system():
-    plane = PlaneElement(point=[0, 0, 0], normal=[0, 0, 1], material=Reflective(),name='base')
+    plane = PlaneElement(center=[0, 0, 0], orientation=[0, 0, 0], material=Reflective(),name='base')
     system = OpticalSystem(elements=[plane])
     return system
 

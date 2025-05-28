@@ -4,9 +4,10 @@ from raytracer.hit import Hit
 from scipy.optimize import bisect
 
 class CylinderElement(Element):
-    def __init__(self, center, axis, radius, height, material, name):
-        super().__init__(material, name)
+    def __init__(self, center, orientation, radius, height, material, name):
+        super().__init__(material, center, orientation, name)
         self.center = np.array(center, dtype=float) # Bottom Center
+        axis = np.array([0,0,1]) # FIX ME
         self.axis = np.array(axis, dtype=float)
         self.axis /= np.linalg.norm(self.axis)
         self.radius = radius
