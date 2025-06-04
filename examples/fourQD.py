@@ -10,13 +10,15 @@ import time
 from lens import *
 from scipy.ndimage import gaussian_filter
 def main():
-    theta =0
+    theta = 10
 
-    (lens, hD, dD) = (ACL1815U(), 2.8, 5.33) # Baseline Lens, Baseline Detector (hd = 2.8 nominal)
+    #(lens, hD, dD) = (ACL1815U(), 2.8, 5.33) # Baseline Lens, Baseline Detector (hd = 2.8 nominal)
+    
     (lens, hD, dD) = (EO_15889(), 2, 5.33) # Baseline Lens, Baseline Detector (hd = 2.8 nominal)
     #(lens, hD, dD) = (ACL1815U(), 5.3, 14.1) # Baseline lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.3 nominal)
     #(lens, hD, dD) = (ACL2520U(), 6.0, 14.1) # Big Thor lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.0 nominal)
     #(lens, hD, dD) = (EO_16982(), 2.0, 14.1) # Big EO lens, Big Detector
+    (lens, hD, dD) = (ACL1815U(), 2.8, 5.33) # Baseline lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.3 nominal)    
     (b,db) = (6,2)
     if (dD > 10):
         (b, db) = (12,3)
@@ -29,7 +31,7 @@ def main():
         single_ray(s,ax)
     else:
         
-        N=500
+        N=200
         start = time.time()
         
         
@@ -46,17 +48,28 @@ def main():
 
 
         
-        xedges = np.linspace(-1,1,int(N/4))*b
-        yedges = xedges
+
         #hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/4))
-        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[xedges,yedges])
+        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/2))
     
         xtnt = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
         #xtnt = [-b, b, -b, b]
         # Plot the heatmap
-        
+        plt.imshow(hist.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='equal')
+        plt.colorbar(label='Hit count per bin') 
+
+
+        fig, ax = plt.subplots()
+
+        xedges = np.linspace(-1,1,int(N/4))*b
+        yedges = xedges
+        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[xedges,yedges])
+        xtnt = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
         hist_smoothed = gaussian_filter(hist, sigma=2)
-        image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
+        if False:
+            image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
+        else:
+            image = ax.imshow(hist.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist.max()/20.0)*20)
         psi = np.linspace(0,2*np.pi,500)
         ax.plot((dD/2)*np.cos(psi),(dD/2)*np.sin(psi),color='white',linewidth=5)
         fig.colorbar(image, label='Hit count per bin')
@@ -193,7 +206,7 @@ def three_d_ray(system):
     origin = np.array([-10.5, 0.0, -1.0])      # 1qmm in front of lens, off-axis in x/y
     direction = np.array([0.2, 0.0, 1.0])     # Pointing along +z
     direction = np.array([0.0, 0.0, 1.0])     # Pointing along +z
-    origin = np.array([9.0, 0.0, 0.0])      # 1qmm in front of lens, off-axis in x/y
+    origin = np.array([-9.0, 0.0, 0.0])      # 1qmm in front of lens, off-axis in x/y
     
     # Initialize the geometric tracer
     tracer = GeometricTrace(system)
@@ -201,6 +214,9 @@ def three_d_ray(system):
     # Normalize direction
     direction = direction / np.linalg.norm(direction)
     
+    theta = 10.0
+    direction = np.array([np.sin(np.deg2rad(theta)), 0.0, np.cos(np.deg2rad(theta))])
+
     # Provide the ray to the tracer
     tracer.rays_given(origin, direction)
     

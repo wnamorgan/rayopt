@@ -10,7 +10,7 @@ class AsphericElement(Element):
         self.k = lens.conic            # Conic constant
         self.coeffs = lens.aspheric    # List of A4, A6, A8, ...
         self.aperture_radius = lens.D/2 
-        self.bounds = (1e-5, 100)
+        self.bounds = (1e-5, 200)
 
     def cylinder_function(self,x, y, z):
         r2 = x**2 + y**2
@@ -32,7 +32,6 @@ class AsphericElement(Element):
         poly=0.0
         for k, coeff in enumerate(self.coeffs):
             poly = poly + coeff*(r2**(k+1))
-        #poly = self.coeffs[0]*r2**2
         return -(base + poly)
 
     def intersect(self, ray_global):
@@ -45,10 +44,27 @@ class AsphericElement(Element):
             return self.cylinder_function(*point)
         
         try:
-            rhb = self.bounds[1]
-            if (f_cylinder(self.bounds[0])*f_cylinder(self.bounds[1])<0):
-                rhb = bisect(f_cylinder, *self.bounds, xtol=1e-6)
-            t_hit = bisect(f, self.bounds[0], rhb, xtol=1e-6)
+            # rhb = self.bounds[1]
+            # if False:
+            #     if (f_cylinder(self.bounds[0])*f_cylinder(self.bounds[1])<0):
+            #         rhb = bisect(f_cylinder, *self.bounds, xtol=1e-6)
+            #     t_hit = bisect(f, self.bounds[0], rhb, xtol=1e-6)    
+            # else:
+            #     val = self.cylinder_intersect(ray_local)
+            #     if val == None:
+            #         return None
+            #     else:
+            #         t_hit = bisect(f, val[0], val[1], xtol=1e-6)
+            (ux,uy,uz) = ray_local.direction
+            (x,y,z) = ray_local.origin
+            t_max = self.bounds[1]
+            if not (uz==0.0):
+                tp = (self.sag(self.aperture_radius**2)-z)/uz
+                (xp,yp) = (x+ux*tp,y+y+uy*tp)
+                rp = np.sqrt(xp**2+yp**2)>self.aperture_radius
+                if ((tp>0) and (rp<=self.aperture_radius)):
+                    t_max = tp
+            t_hit = bisect(f, self.bounds[0], t_max, xtol=1e-6)        
             if t_hit < 0:
                 return None
         except ValueError:
@@ -74,3 +90,28 @@ class AsphericElement(Element):
         n = np.array([dx, dy, dz]) 
         self._normal = n/np.linalg.norm(n)
         return self._normal
+
+    def cylinder_intersect(self, ray):
+        # ray is already in cylinder coordinate frame
+        # Compute ray-cylinder intersection
+
+        rc = self.aperture_radius
+
+        x  = ray.origin[0]
+        y  = ray.origin[1]
+        ux = ray.direction[0]
+        uy = ray.direction[1]
+        a  = ux**2 + uy**2
+        b = 2*(x*ux+y*uy)
+        c = x**2 + y**2 - rc**2
+        d  = b**2-4*a*c
+        if (d<0): # no intersection
+            return None
+        elif (a==0):
+            return self.bounds
+        else:
+            t1 = (-2*b+np.sqrt(d))/(2*a)
+            t2 = (-2*b-np.sqrt(d))/(2*a)
+            tmin = min(t1,t2)
+            tmax = max(t1,t2)
+            return (max(tmin,0.0),max(tmax,0.0))

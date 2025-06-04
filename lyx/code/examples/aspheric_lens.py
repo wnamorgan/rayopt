@@ -17,12 +17,16 @@ from raytracer.system import OpticalSystem
 from raytracer.detector import calc_ratios
 
 # Select Lens
-(lens,offset,dD) = (ACL2520(),2.8,5.33)
-(lens,offset,dD) = (ACL1815(),2.8,5.33)
+(lens,offset,dD) = (ACL2520(),0.0,5.33)
+(lens,offset,dD) = (ACL1815(),0.0,5.33)
 (lens,offset,dD) = (AL1815(),0.0,5.33)
-#(lens,offset,dD) = (AL75150(),0.0,5.33) 
+(lens,offset,dD) = (AL75150(),0.0,5.33) 
+(lens,offset,dD) = (AL1512(),0.0,5.33)
+(lens,offset,dD) = (EO22714(),0.0,5.33)
+#(lens,offset,dD) = (EO49109(),3.0,5.33)
 
 
+(lens,offset,dD) = (ACL1815(),2.8,5.33)
 
 def make_system():
     
@@ -48,6 +52,7 @@ def make_system():
     system.add_elements(lens_front)
     system.add_elements(lens_back)
     system.add_elements(plane_termination)
+    system.apex = apex
     return system
 
 def single_ray():
@@ -55,12 +60,12 @@ def single_ray():
     system = make_system()
     
     psi = np.deg2rad(0)
-    theta = np.deg2rad(180)
+    theta = np.deg2rad(170)
 
     
-    hR = np.ceil(lens.fb/10)*10*1.5
+    hR = np.ceil(lens.fb/10)*10*2.0
 
-    ray = Ray(origin=[0.0, 5.0, hR], direction=[np.sin(theta)*np.cos(psi), np.sin(theta)*np.sin(psi), np.cos(theta)])
+    ray = Ray(origin=[-6, -8.0, system.apex+1], direction=[np.sin(theta)*np.cos(psi), np.sin(theta)*np.sin(psi), np.cos(theta)])
 
     start_time = time.perf_counter()
     history = system.propagate(ray)
@@ -94,34 +99,7 @@ def single_ray():
     ax[1].set_xlabel('y (mm)')
     ax[1].set_ylabel('z (mm)')
 
-def ray_bundle(s,direction,N):
 
-    R_l = 18/2.0
-    R_d = 5.3/2.0
-    # Create a meshgrid 1"x1"
-    x = np.linspace(-1, 1, N)*25.4/2.0
-    y = np.linspace(-1, 1, N)*25.4/2.0
-
-    hR = np.ceil(lens.fb/10)*10*1.2
-
-    # Normalize direction
-    direction = direction / np.linalg.norm(direction)
-
-    pts = np.zeros(shape=(N**2,2))
-    mask = np.zeros(shape=(N**2,1),dtype=bool)
-    k=0
-    points = []
-    for i in range(N):
-        for j in range(N):
-
-            ray = Ray(origin=[x[i], y[j], hR], direction=direction)
-            history = s.propagate(ray)
-            ray_final = history[-1][1].origin
-            r_l = np.sqrt(ray_final[0]**2 + ray_final[1]**2)
-            if ( (r_l <= R_l) ): 
-                points.append(ray_final.copy())
-    points = np.array(points)
-    return points
 
 def RayBundleSim(N=100,theta=np.deg2rad(180)):
         
@@ -132,9 +110,17 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
 
         s = make_system()
         start = time.time()
-        direction = np.array([0.0, 0.0, -1.0])     # Pointing along -z
-        psi = np.deg2rad(0)
-        points = ray_bundle(s,direction,N)
+
+        bundle_path = s.ray_bundle(center=(0,0,s.apex+1.0),psi=0,theta=theta,W=lens.D*1.4, N=N)
+        points = []
+        for k,ray_path in enumerate(bundle_path):
+            if (s.elements[0].name==ray_path[1][0]): # assumes first element in system is only entry point
+                ray_final = ray_path[-1][1]
+                points.append(ray_final.origin)
+                if ray_final.origin[0]<-0.1:
+                    pass
+        points = np.array(points)
+        
         end = time.time()
         print(f"Took {end - start:.2f} seconds")    
         (az,el) = calc_ratios(points,5.3/2)
@@ -153,11 +139,12 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
         hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[xedges,yedges])
     
         xtnt = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-        #xtnt = [-b, b, -b, b]
-        # Plot the heatmap
-        
-        hist_smoothed = gaussian_filter(hist, sigma=2)
-        image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
+
+        hist_smoothed = gaussian_filter(hist, sigma=1)
+        if False:
+            image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
+        else:
+            image = ax.imshow(hist.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist.max()/20.0)*20)
         psi = np.linspace(0,2*np.pi,500)
         ax.plot((dD/2)*np.cos(psi),(dD/2)*np.sin(psi),color='white',linewidth=5)
         fig.colorbar(image, label='Hit count per bin')
@@ -165,8 +152,8 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
 
 
 def main():
-    single_ray()
-    #RayBundleSim(100,theta=np.deg2rad(180))
+    #single_ray()
+    RayBundleSim(200,theta=170)
     plt.show()
 
 if __name__ == "__main__":

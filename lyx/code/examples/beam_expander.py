@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import time
 from matplotlib.patches import Circle
 from scipy.ndimage import gaussian_filter
+from scipy import stats
 
 # Add the parent directory of raytracer/ to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -15,11 +16,12 @@ from raytracer.surface import *
 from raytracer.lens import *
 from raytracer.system import OpticalSystem
 from raytracer.detector import calc_ratios
+from raytracer.grid import *
 
 # Select Lens
-(lens1, lens2, offset, dD) = (AL1815(), AL75150(), 0.0, 5.33) 
-
-
+(lens1, lens2, offset, dD) = (AL1815(),  AL75150(), 0.0, 5.33) 
+(lens1, lens2, offset, dD) = (AL1512(),  EO22714(), 0.0, 5.33) 
+(lens1, lens2, offset, dD) = (EO49109(), EO22714(), 0.0, 5.33) 
 
 def make_system():
     
@@ -122,12 +124,13 @@ def ray_bundle(s,direction,N):
     mask = np.zeros(shape=(N**2,1),dtype=bool)
     k=0
     points = []
+
     for i in range(N):
         for j in range(N):
 
             ray = Ray(origin=[x[i], y[j], hR], direction=direction)
             history = s.propagate(ray)
-            ray_final = history[-1][1].origin
+            ray_final = history[-1][1]
             r_l = np.sqrt(ray.origin[0]**2 + ray.origin[1]**2)
             if ( (r_l <= R_b) ): 
                 points.append(ray_final.copy())
@@ -136,50 +139,62 @@ def ray_bundle(s,direction,N):
 
 def RayBundleSim(N=100,theta=np.deg2rad(180)):
         
-        b=40
-        FigName = f"Tracing_{theta}_Expander.jpg"
+    b=40
+    FigName = f"Tracing_{theta}_Expander.jpg"
+    s = make_system()
+    start = time.time()
+    direction = np.array([0.0, 0.0, -1.0])     # Pointing along -z
+    psi = np.deg2rad(0)
+    rays = ray_bundle(s,direction,N)
+    theta = np.zeros(len(rays))
+    points = np.zeros(shape=(len(rays),3))
+    for k, ray in enumerate(rays):
+        points[k,:] = ray.origin.reshape(1,3)
+        theta[k] = np.rad2deg(np.arccos(np.fabs(ray.direction[2])))
+    end = time.time()
+    print(f"Took {end - start:.2f} seconds")    
+    #hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/2))
+    hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[int(N/2),int(N/2)], range=[[-40, 40],[-40, 40]])
+    # Plot the heatmap
+    fig, ax = plt.subplots()
+    image = ax.imshow(hist.T, origin='lower', extent=[-40, 40, -40, 40], aspect='equal')
+    fig.colorbar(image, label='Hit count per bin')  
+    psi = np.linspace(0,2*np.pi,500)
+    ax.plot((75/2)*np.cos(psi),(75/2)*np.sin(psi),color='white',linewidth=5)
+    fig, ax = plt.subplots()
+    xedges = np.linspace(-1,1,int(N/4))*b
+    yedges = xedges
+    #hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/4))
+    hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[xedges,yedges])
 
-        s = make_system()
-        start = time.time()
-        direction = np.array([0.0, 0.0, -1.0])     # Pointing along -z
-        psi = np.deg2rad(0)
-        points = ray_bundle(s,direction,N)
-        end = time.time()
-        print(f"Took {end - start:.2f} seconds")    
-
-        #hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/2))
-        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[int(N/2),int(N/2)], range=[[-40, 40],[-40, 40]])
-
-        # Plot the heatmap
-        fig, ax = plt.subplots()
-        image = ax.imshow(hist.T, origin='lower', extent=[-40, 40, -40, 40], aspect='equal')
-        fig.colorbar(image, label='Hit count per bin')  
-        psi = np.linspace(0,2*np.pi,500)
-        ax.plot((75/2)*np.cos(psi),(75/2)*np.sin(psi),color='white',linewidth=5)
-
-
-
-        fig, ax = plt.subplots()
-        xedges = np.linspace(-1,1,int(N/4))*b
-        yedges = xedges
-        #hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/4))
-        hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=[xedges,yedges])
+    xtnt = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+    #xtnt = [-b, b, -b, b]
+    # Plot the heatmap
     
-        xtnt = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
-        #xtnt = [-b, b, -b, b]
-        # Plot the heatmap
-        
-        hist_smoothed = gaussian_filter(hist, sigma=2)
-        image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
-        psi = np.linspace(0,2*np.pi,500)
-        ax.plot((75/2)*np.cos(psi),(75/2)*np.sin(psi),color='white',linewidth=5)
-        fig.colorbar(image, label='Hit count per bin')
+    hist_smoothed = gaussian_filter(hist, sigma=2)
+    image = ax.imshow(hist_smoothed.T, origin='lower', extent=xtnt, aspect='equal',vmin=0, vmax=np.ceil(hist_smoothed.max()/20.0)*20)
+    psi = np.linspace(0,2*np.pi,500)
+    ax.plot((75/2)*np.cos(psi),(75/2)*np.sin(psi),color='white',linewidth=5)
+    fig.colorbar(image, label='Hit count per bin')
 
+    # Calculate the binned statistics
+    statistic, x_edges, y_edges, bin_number = stats.binned_statistic_2d(points[:,0], points[:,1], theta, statistic='mean', bins=[xedges,yedges])
+    
+    fig, ax = plt.subplots()
+    # Plot the histogram
+    im = ax.imshow(statistic.T, origin='lower', extent=[x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]], aspect='auto')
+    im.set_clim(vmin=0,vmax=1e-2)
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label('Mean Angle')
 
+    
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    plt.show()
 
 def main():
     #single_ray()
-    RayBundleSim(1000,theta=np.deg2rad(180))
+    RayBundleSim(100,theta=np.deg2rad(180))
     plt.show()
 
 if __name__ == "__main__":
