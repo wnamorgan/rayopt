@@ -54,6 +54,8 @@ class ACL2520(B270):
         self.conic    = -0.6265
         self.aspheric = [1.5e-05]  # A_4
 
+
+
 class ACL1815(B270):
     def __init__(self,λ_um=None):
         super().__init__()        
@@ -138,3 +140,30 @@ class EO49109(BAL35):
         self.tc       = 7.00
         self.conic    = -1.076527
         self.aspheric = [0.0, 2.396040E-04, 6.414674E-07, 7.685840E-09]
+
+
+class EO48769(BK7):
+    def __init__(self,λ_um=None):
+        super().__init__()        
+        self.name     = 'EO48769'
+        self.D        = 25.0
+        self.tc       = 5.6
+        self.fb       = 40.0-self.tc
+        self.λ_um_des = 590e-3
+        self.n        = self.compute_n(self.λ_um_des)#1.52        
+        self.roc      = 20.67
+        self.conic    = 0.0
+        self.aspheric = [0.0]  # A_4
+
+class EO15731(BK7): # Actually is LIB2000+
+    def __init__(self,λ_um=None):
+        super().__init__()        
+        self.name     = 'EO15731'
+        self.D        = 20.0
+        self.tc       = 10.45
+        self.fb       = 9.13
+        self.λ_um_des = 590e-3
+        self.n        = 1.52        
+        self.roc      = 8.343
+        self.conic    = -0.9668032
+        self.aspheric = [0.0, 9.699449e-05, 2.662297e-07, 1.429249e-09]          

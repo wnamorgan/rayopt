@@ -25,10 +25,10 @@ from raytracer.detector import calc_ratios
 (lens,offset,dD) = (EO22714(),0.0,5.33)
 #(lens,offset,dD) = (EO49109(),3.0,5.33)
 
-
-(lens,offset,dD) = (ACL1815(),2.8,5.33)
-
-def make_system():
+(lens,offset,dD) = (ACL2520(),6.0,14.1)
+#(lens,offset,dD) = (EO48769(),20.0,14.1)
+(lens,offset,dD) = (EO15731(),3.0,5.33)
+def make_system(lens):
     
 
 
@@ -57,7 +57,7 @@ def make_system():
 
 def single_ray():
     
-    system = make_system()
+    system = make_system(lens)
     
     psi = np.deg2rad(0)
     theta = np.deg2rad(170)
@@ -108,7 +108,7 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
             (b, db) = (12,3)
         FigName = f"Tracing_{theta}_{lens.name}_{dD}_{offset}.jpg"
 
-        s = make_system()
+        s = make_system(lens)
         start = time.time()
 
         bundle_path = s.ray_bundle(center=(0,0,s.apex+1.0),psi=0,theta=theta,W=lens.D*1.4, N=N)
@@ -123,7 +123,7 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
         
         end = time.time()
         print(f"Took {end - start:.2f} seconds")    
-        (az,el) = calc_ratios(points,5.3/2)
+        (az,el) = calc_ratios(points,dD/2)
         print(f"(rho_az,rho_el) = ({az},{el})")
         hist, xedges, yedges = np.histogram2d(points[:,0], points[:,1], bins=int(N/2))
     
@@ -153,7 +153,7 @@ def RayBundleSim(N=100,theta=np.deg2rad(180)):
 
 def main():
     #single_ray()
-    RayBundleSim(200,theta=170)
+    RayBundleSim(200,theta=180)
     plt.show()
 
 if __name__ == "__main__":
