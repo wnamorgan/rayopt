@@ -7,12 +7,28 @@ class ACL1815U():
         self.BFL       = 10
         self.roc       = 7.818
         self.conic     = -1.81700
+        self.n         = 1.52
         self.aspherics = [0, 2.93e-04, 0.0, 0.0, 0.0]
         self.s2_roc    = 0.0
+
+class AL1815():
+    def __init__(self):
+        super().__init__()        
+        self.name     = 'AL1815'
+        self.D        = 18.0
+        self.BFL      = 11.5
+        self.EFL      = 18.0
+        self.n        = 1.7880                
+        self.roc      = 11.65
+        self.s2_roc   = 0.0
+        self.tc       = 6.2
+        self.conic    = -1.1
+        self.aspherics = [0.0, 3.6906721e-5, -1.2854612e-8, -1.4001677e-10, -2.5131166e-13, 5.0178988e-16, 5.8558715e-18, -1.1277944e-20]
 
 class ACL2520U():
     def __init__(self):
         self.name      = 'ACL2520U'
+        self.n         = 1.52
         self.tc        = 12.0
         self.D         = 25
         self.EFL       = 20.1
@@ -25,6 +41,7 @@ class ACL2520U():
 class EO_16982():
     def __init__(self):
         self.name      = '16-982'
+        self.n         = 1.52
         self.tc        = 10.40
         self.D         = 25
         self.EFL       = 15
@@ -39,6 +56,7 @@ class EO_16982():
 class EO_15888():
     def __init__(self):
         self.name      = '15-888'
+        self.n         = 1.52
         self.tc        = 7.40
         self.D         = 18
         self.EFL       = 13.5
@@ -55,6 +73,7 @@ class EO_15888():
 class EO_15889():
     def __init__(self):
         self.name      = '15-889'
+        self.n         = 1.52
         self.tc        = 10.90
         self.D         = 20
         self.EFL       = 11

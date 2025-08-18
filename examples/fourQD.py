@@ -10,7 +10,7 @@ import time
 from lens import *
 from scipy.ndimage import gaussian_filter
 def main():
-    theta = 10
+    theta = 0
 
     #(lens, hD, dD) = (ACL1815U(), 2.8, 5.33) # Baseline Lens, Baseline Detector (hd = 2.8 nominal)
     
@@ -19,6 +19,7 @@ def main():
     #(lens, hD, dD) = (ACL2520U(), 6.0, 14.1) # Big Thor lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.0 nominal)
     #(lens, hD, dD) = (EO_16982(), 2.0, 14.1) # Big EO lens, Big Detector
     (lens, hD, dD) = (ACL1815U(), 2.8, 5.33) # Baseline lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.3 nominal)    
+    (lens, hD, dD) = (AL1815(), 0.0, 5.33) # Baseline lens, Big Detector (set hD=-0.2 to be at focal point and hD=5.3 nominal)   
     (b,db) = (6,2)
     if (dD > 10):
         (b, db) = (12,3)
@@ -235,7 +236,7 @@ def get_system(lens=ACL1815U(), hd = 2.8):
     
     text = f"""
         S       0      0      15 AIR
-        S       {lens.roc}  1       {lens.D/2} 1.52
+        S       {lens.roc}  1       {lens.D/2} {lens.n}
         S       {lens.s2_roc}      {lens.tc}     {lens.D/2} AIR
         S       0      {lens.BFL-hd}    12.0 AIR
         """

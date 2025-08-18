@@ -18,16 +18,16 @@ from raytracer.detector import calc_ratios
 
 # Select Lens
 (lens,offset,dD) = (ACL2520(),0.0,5.33)
-(lens,offset,dD) = (ACL1815(),0.0,5.33)
-(lens,offset,dD) = (AL1815(),0.0,5.33)
-(lens,offset,dD) = (AL75150(),0.0,5.33) 
-(lens,offset,dD) = (AL1512(),0.0,5.33)
-(lens,offset,dD) = (EO22714(),0.0,5.33)
+(lens,offset,dD) = (ACL1815(),3.0,5.33)
+(lens,offset,dD) = (AL1815(),0.0,5.33) #-0.2 offset?
+#(lens,offset,dD) = (AL75150(),0.0,5.33) 
+#(lens,offset,dD) = (AL1512(),0.0,5.33)
+#(lens,offset,dD) = (EO22714(),0.0,5.33)
 #(lens,offset,dD) = (EO49109(),3.0,5.33)
 
-(lens,offset,dD) = (ACL2520(),6.0,14.1)
+#(lens,offset,dD) = (ACL2520(),6.0,14.1)
 #(lens,offset,dD) = (EO48769(),20.0,14.1)
-(lens,offset,dD) = (EO15731(),3.0,5.33)
+#(lens,offset,dD) = (EO15731(),3.0,5.33)
 def make_system(lens):
     
 

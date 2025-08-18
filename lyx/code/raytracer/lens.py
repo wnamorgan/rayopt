@@ -78,8 +78,8 @@ class AL1815(SLAH64):
         self.name     = 'AL1815'
         self.D        = 18.0
         self.fb       = 11.5
-        self.λ_um_des = 590e-3
-        self.n        = self.compute_n(self.λ_um_des)#1.7880                
+        self.λ_um_des = 780e-3
+        self.n        = 1.788#self.compute_n(self.λ_um_des)#1.7880                
         self.roc      = 11.65
         self.tc       = 6.2
         self.conic    = -1.1

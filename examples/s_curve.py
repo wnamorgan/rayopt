@@ -7,8 +7,8 @@ from lens import *
 def Single_Scurve(lens,hD,dD,Amax=20):
     s = get_system(lens,hD)
 
-    N_ang=50
-    N_rays=400
+    N_ang=10
+    N_rays=200
     start = time.time()
     az = np.zeros(N_ang)
     el = np.zeros(N_ang)
@@ -68,15 +68,15 @@ def main():
     Amax = 15
     
     (lens, hD, dD) = (ACL1815U(), 2.8, 5.33) # Baseline Lens, Baseline Detector (2.8)
+    (lens, hD, dD) = (AL1815(), 3.2, 5.33) # Baseline Lens, Baseline Detector (2.8)
     #(lens, hD, dD) = (ACL1815U(), 5.0, 14.1) # Baseline lens, Big Detector (5.0)
     #(lens, hD, dD) = (ACL2520U(), 6.0, 14.1) # Big Thor lens, Big Detector (5.0)
     #(lens, hD, dD) = (ACL2520U(), 3.5, 5.33) # Big Thor Lens, Baseline Detector (2.8)
     #(lens, hD, dD) = (EO_15889(), 2, 5.33)
 
-    hD=2.8
-    #Plot_Single_Scurve(lens,hD,dD,Amax=20)
+    Plot_Single_Scurve(lens,hD,dD,Amax=Amax)
     #Sweep(lens,hD,dD,Amax)
-    PosVsNeg(lens,hD,dD,Amax)
+    #PosVsNeg(lens,hD,dD,Amax)
     plt.show()
 
 

@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 from raytracer.lens import *
-from examples.fourQD import make_system, RayBundle
+from examples.FQD import make_system, RayBundle
 
 def Single_Point(lens,hD,dD,ang=10):
     s = make_system(lens,hD)
@@ -58,10 +58,11 @@ def Plot_Single_Scurve(lens,hD,dD,Amax=20):
 def Sweep(lens,hD,dD,Amax=20):
 
     hDvals = [3.0, 4.0, 5.0, 6.0, 7.0]
-    #hDvals = [2.5, 3.0, 3.5, 4.0, 4.5]
+    hDvals = [2.5, 3.0, 3.5, 4.0, 4.5] # ACL1815
     #hDvals = [-2.0, 2.0]
     #hDvals = [14,16,18,20]
-    hDvals = [2.4,2.6,2.8,3.0,3.2]
+    #hDvals = [3.0, 3.3, 3.6, 3.9, 4.2] # EO 15731
+    hDvals = [2.8,3.0,3.2,3.4,3.6]
     FigName = f"ScurveSweep_{lens.name}_{dD}.jpg"
     fig, ax = plt.subplots()
     for k,hD in enumerate(hDvals):
@@ -81,7 +82,10 @@ def main():
 
     Amax = 15
     (lens,offset,dD) = (ACL2520(),4.0,14.1)
-    (lens,offset,dD) = (EO15731(),2.5,5.33)
+    (lens,offset,dD) = (EO15731(),3.0,5.33)
+    #(lens,offset,dD) = (ACL1815(),3.0,5.33)
+    #(lens,offset,dD) = (ACL1815(),3.0,5.33)
+    #(lens,offset,dD) = (AL1815(),3,5.33)
     #(lens,offset,dD) = (EO48769(),20.0,14.1)
     #Single_Point(lens,offset,dD,ang=10)
     #Plot_Single_Scurve(lens,offset,dD,Amax=Amax)
