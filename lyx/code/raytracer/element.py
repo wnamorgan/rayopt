@@ -4,14 +4,14 @@ from raytracer.ray import Ray
 from raytracer.hit import Hit
 from math import sin, cos
 # === ABSTRACT ELEMENT CLASS ===
-class Element(ABC):
-    @abstractmethod
-    def intersect(self, ray: Ray):
-        pass
+# class Element(ABC):
+#     @abstractmethod
+#     def intersect(self, ray: Ray):
+#         pass
 
-    @abstractmethod
-    def redirect(self, ray: Ray, hit: Hit):
-        pass
+#     @abstractmethod
+#     def redirect(self, ray: Ray, hit: Hit):
+#         pass
 
 class Element(ABC):
     def __init__(self, material, center, orientation, name='element'):

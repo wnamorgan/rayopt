@@ -3,8 +3,8 @@ from raytracer.plane import PlaneElement
 from raytracer.ray import Ray  
 from raytracer.grid import *
 class OpticalSystem:
-    def __init__(self, elements=[], max_bounces=10, epsilon=1e-6):
-        self.elements = elements
+    def __init__(self, elements=None, max_bounces=10, epsilon=1e-6):
+        self.elements = list(elements) if elements is not None else []
         self.max_bounces = max_bounces
         self.epsilon = epsilon
 

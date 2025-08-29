@@ -82,13 +82,13 @@ def main():
 
     Amax = 15
     (lens,offset,dD) = (ACL2520(),4.0,14.1)
-    (lens,offset,dD) = (EO15731(),3.0,5.33)
+    #(lens,offset,dD) = (EO15731(),3.0,5.33)
     #(lens,offset,dD) = (ACL1815(),3.0,5.33)
     #(lens,offset,dD) = (ACL1815(),3.0,5.33)
     #(lens,offset,dD) = (AL1815(),3,5.33)
     #(lens,offset,dD) = (EO48769(),20.0,14.1)
     #Single_Point(lens,offset,dD,ang=10)
-    #Plot_Single_Scurve(lens,offset,dD,Amax=Amax)
+    Plot_Single_Scurve(lens,offset,dD,Amax=Amax)
     Sweep(lens,offset,dD,Amax)
     #PosVsNeg(lens,hD,dD,Amax)
     plt.show()

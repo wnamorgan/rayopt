@@ -10,6 +10,13 @@ class Material(ABC):
     def redirect(self, ray: Ray, hit: Hit):
         pass
 
+    @staticmethod
+    def CPM(v):
+        v = v.reshape(3)
+        return np.array([[  0.0, -v[2],  v[1]],
+                         [ v[2],   0.0, -v[0]],
+                         [-v[1],  v[0],   0.0]])
+
 class Reflective(Material):
     def redirect(self, ray: Ray, hit: Hit):
         d = ray.direction
@@ -56,3 +63,43 @@ class Refractive(Material):
         cos_theta_t = np.sqrt(1 - sin2_theta_t)
         refracted_dir = (n1 / n2) * d + ((n1 / n2) * cos_theta_i - cos_theta_t) * u_n
         return Ray(hit.point, refracted_dir), True
+    
+class Diffuse(Refractive):
+    def __init__(self, n_top=1.0, n_bottom=1.0, sigma_deg = 10.0):
+        self.sigma_deg = sigma_deg
+        super().__init__(n_top, n_bottom)
+    
+    @staticmethod
+    def Rodriguez(v_in,u,theta):
+        K = Material.CPM(u)
+        R = np.eye(3) + np.sin(theta)*K + (1.0 - np.cos(theta))*(K @ K)
+        v_out = R @ v_in
+        return v_out
+    
+
+    
+    def redirect(self,ray,hit):
+        refracted_ray, _ = super().redirect(ray,hit)
+        d = refracted_ray.direction
+        raw_normal = hit.normal
+
+        dir = np.dot(d, raw_normal)
+        leaving = (dir>0 and self.n_top<self.n_bottom) or (dir<0 and self.n_top>self.n_bottom)
+        if leaving: # Leaving material => apply scatter
+            if raw_normal[0] < 0.9:
+                temp = np.array([1.0, 0.0, 0.0]).reshape(3,1)
+            else:
+                temp = np.array([0.0, 1.0, 0.0]).reshape(3,1)
+
+            u1 = Material.CPM(raw_normal) @ temp
+            u1 = u1/np.linalg.norm(u1)
+            u2 = Material.CPM(raw_normal) @ u1
+
+            d1 = Diffuse.Rodriguez(d, u1, np.deg2rad(self.sigma_deg*np.random.normal(scale=1))) # Rotate about u1
+            d2 = Diffuse.Rodriguez(d1,u2, np.deg2rad(self.sigma_deg*np.random.normal(scale=1))) # Rotate about u2
+
+            return Ray(hit.point, d2), True
+        else: 
+            return refracted_ray, True
+
+
